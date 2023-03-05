@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
-import type { Product } from '@/models/product';
-import { useCartStore } from './cart';
+import type { Product } from '@/models/Product';
+import { useCartStore } from './Cart';
 
 export type ProductsSate = {
     products: Product[];
@@ -9,7 +9,7 @@ export type ProductsSate = {
     error: string | undefined;
 }
 
-export const useProductsStore = defineStore('product', {
+export const useProductsStore = defineStore('products', {
     state: () => ({
         products: [],
         loading: false,
@@ -34,6 +34,7 @@ export const useProductsStore = defineStore('product', {
             try {
                 this.products = await fetch('https://63c10327716562671870f959.mockapi.io/products').then(response => response.json());
             } catch (error: any) {
+                console.log(error)
                 this.error = error.message;
             } finally {
                 this.loading = false;

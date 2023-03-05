@@ -1,19 +1,13 @@
 <script setup lang="ts">
-export type ButtonType = "button" | "submit" | "reset" | undefined;
+type ButtonType = "button" | "submit" | "reset" | undefined;
 
-const props = defineProps<{ text: string, type: ButtonType }>();
-const emit = defineEmits<{ (e: string): void }>();
+const props = defineProps<{ text: string, type: ButtonType, disabled?: boolean }>();
 
-const { type, text } = props;
-
-function onButtonClick() {
-    emit('buttonClicked');
-}
 </script>
 
 <template>
-    <button :type="type" @click.prevent="() => onButtonClick()">
-        {{ text }}
+    <button :type="props.type" :disabled="props.disabled">
+        {{ props.text }}
     </button>
 </template>
 
@@ -22,7 +16,7 @@ button {
     width: 100%;
     letter-spacing: 0.5px;
     line-height: 50px;
-    padding: 0 35px 0 35px;
+    padding: 0 35px;
     font-size: 15px;
     background-color: black;
     color: white;
@@ -40,6 +34,12 @@ button {
         background-color: white;
         color: black;
         border: 1px solid black;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    button {
+        padding: 0 15px;
     }
 }
 </style>

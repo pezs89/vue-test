@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { useCartStore } from '@/stores/Cart';
+import { storeToRefs } from 'pinia';
+import CartItemsCounter from './CartItemsCounter.vue';
+
+const cartStore = useCartStore();
+const { getCartItemsCount } = storeToRefs(cartStore);
+</script>
+
 <template>
     <nav class="nav">
         <div class="nav__products">
@@ -8,6 +17,7 @@
         <div class="nav__cart">
             <RouterLink to="/cart">
                 <CartOutline :size="32" />
+                <CartItemsCounter v-if="getCartItemsCount > 0" :items-count="getCartItemsCount" />
             </RouterLink>
         </div>
     </nav>

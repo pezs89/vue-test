@@ -2,31 +2,39 @@
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 
-import type { Product } from '@/models/product';
-import { useCartStore } from '@/stores/cart';
-import { useProductsStore } from '@/stores/products';
+import type { Product } from '@/models/Product';
+import type { CartItem } from '@/models/CartItem';
+import { useCartStore } from '@/stores/Cart';
+import { useProductsStore } from '@/stores/Products';
 
-import Card from '@/components/card.vue';
+import Card from '@/components/Card.vue';
 import CurrentViewHeader from '@/components/CurrentViewHeader.vue';
 
 const productsStore = useProductsStore();
 const cartStore = useCartStore();
-const { loading, error, getProducts } = storeToRefs(productsStore);
+const { products, getProducts } = storeToRefs(productsStore);
 
 onMounted(() => {
   productsStore.fetchProducts();
 });
 
 function onAddToCart(event: { product: Product, amount: number }) {
-  cartStore.addToCart({ id: event.product.id, name: event.product.name, img: event.product.img, orderAmount: event.amount })
+  const newCartItem: CartItem = {
+    id: event.product.id,
+    price: event.product.price,
+    orderAmount: event.amount,
+    img: event.product.img,
+    name: event.product.name
+  };
+  cartStore.addToCart(newCartItem);
 }
 </script>
 
 <template>
   <CurrentViewHeader :title="'Products'" />
   <div class="product-view">
-    <Card v-for="product in getProducts" :key="product.id" :product="product"
-      @add-to-cart="($event) => onAddToCart($event)" />
+    <Card v-for="(product, i) in getProducts" :key="product.id" :product="product"
+      :original-amount="products[i]?.availableAmount" @add-to-cart="($event) => onAddToCart($event)" />
   </div>
 </template>
 
@@ -36,5 +44,26 @@ function onAddToCart(event: { product: Product, amount: number }) {
   grid-template-columns: repeat(4, 1fr);
   column-gap: 20px;
   row-gap: 50px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .product-view {
+    grid-template-columns: repeat(3, 1fr);
+
+  }
+}
+
+@media only screen and (max-width: 680px) {
+  .product-view {
+    grid-template-columns: repeat(2, 1fr);
+
+  }
+}
+
+@media only screen and (max-width: 481px) {
+  .product-view {
+    grid-template-columns: repeat(1, 1fr);
+
+  }
 }
 </style>

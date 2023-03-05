@@ -1,10 +1,9 @@
 <script setup lang="ts">
 const props = defineProps<{ title: string }>();
-const { title } = props;
 </script>
 
 <template>
-    <h2>{{ title }}</h2>
+    <h2>{{ props.title }}</h2>
 </template>
 
 <style scoped>

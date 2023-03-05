@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import type { CartItem } from "@/models/cartItem";
+import type { CartItem } from "@/models/CartItem";
+
 
 export type CartState = {
     cartItems: CartItem[];
@@ -10,7 +11,15 @@ export const useCartStore = defineStore('cart', {
         cartItems: []
     } as CartState),
     getters: {
-        getCartItems: (state: CartState) => state.cartItems
+        getCartItems: (state: CartState) => state.cartItems,
+        getCartItemsCount: (state: CartState) => state.cartItems
+            .reduce(
+                (accumulator, currentCurtItem) => {
+                    accumulator += currentCurtItem.orderAmount;
+                    return accumulator;
+                }, 0),
+        getCartTotal: (state: CartState) => state.cartItems
+            .reduce((acc, currentItem) => acc += currentItem.orderAmount * currentItem.price, 0)
     },
     actions: {
         addToCart(newProductToAdd: CartItem) {
@@ -28,6 +37,9 @@ export const useCartStore = defineStore('cart', {
             } else {
                 this.cartItems.push(newProductToAdd);
             }
+        },
+        removeProduct(id: string) {
+            this.cartItems = this.cartItems.filter(cartItem => cartItem.id !== id);
         }
     }
 })
